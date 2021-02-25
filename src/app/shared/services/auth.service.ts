@@ -65,6 +65,7 @@ export class AuthService {
       return this.userService.getUserByEmail(email).pipe(tap((result) => {
         if (result != null) {
           this._user = result;
+          this._user.fullName = this._user.firstName + ' ' + this._user.lastName; 
           sessionStorage.setItem('sessionToken', this._user.userId);
         }
       }));
@@ -76,12 +77,13 @@ export class AuthService {
    return this.userService.getUserById(sessionToken).pipe(tap((result) => {
      if (result != null) {
        this._user = result;
+       this._user.fullName = this._user.firstName + ' ' + this._user.lastName; 
        sessionStorage.setItem('sessionToken', this._user.userId);
      }
    }));
  }
 
-  async getUser() {
+  getUser() {
     try {
       // Send request
 

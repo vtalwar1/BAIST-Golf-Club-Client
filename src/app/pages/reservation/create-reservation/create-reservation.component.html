@@ -1,13 +1,9 @@
 <h2 class="content-block">Create Reservation</h2>
 <div class="content-block">
     <div class="dx-card responsive-paddings">
-        <div id="form-container">
-            <!-- <dx-select-box
-                [dataSource]="reservationTypes"
-                displayExpr="name"
-                valueExpr="id"
-                [value]="reservationTypeValue"
-        ></dx-select-box> -->
-        </div>
-    </div>  
-</div>  
+        <app-one-time-reservation
+            isNew="false"
+            [reservationData]="reservationData">
+        </app-one-time-reservation>
+    </div>
+    </div>   

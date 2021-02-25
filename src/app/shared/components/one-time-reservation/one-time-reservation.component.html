@@ -1,36 +1,93 @@
-<!-- <dx-form id="form"
-    [formData]="employee"
-    [colCount]="2">
-    <dxi-item itemType="group" caption="System Information">
-        <dxi-item dataField="ID"></dxi-item>
-            <dxi-item dataField="FirstName"></dxi-item>
-            <dxi-item dataField="LastName"></dxi-item>
-            <dxi-item dataField="HireDate"></dxi-item>
-            <dxi-item dataField="Position"></dxi-item>
-            <dxi-item dataField="OfficeNo"></dxi-item>
+
+    <div class="dx-fieldset">
+        <div class="dx-field">
+            <div class="dx-field-label">Select Reservation Type</div>
+            <div class="dx-field-value">
+                <dx-select-box #selectBox
+            [dataSource]="reservationTypes "
+            displayExpr="description"
+            valueExpr="id"
+            [value]="reservationTypeSelectedValue"
+            [disabled]="reservationTypeDisabled"
+            (onValueChanged)="onReservationTypeValueChange($event)"></dx-select-box>
+            </div>
+        </div>
+    </div>
+
+<dx-form id="form"
+    [formData]="reservationData"
+    [colCount]="2"
+    (onFieldDataChanged)="fieldDataChanged($event)">
+    <dxi-item itemType="group" caption="User Info">
+    <dxi-item dataField="user.membership.membershipNumber" [disabled]="isMembershipNumberDisabled">
+        <dxo-label
+        text="Membership Number">
+        </dxo-label>  
+        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxi-validation-rule type="async" message="Invalid Membership Number" [validationCallback]="asyncValidationMembershipNumber"></dxi-validation-rule>
+    </dxi-item>
+
+    <dxi-item dataField="user.fullName" [disabled]="true">
+        <dxo-label
+        text="Member Name">
+        </dxo-label>  
+    </dxi-item>
+
+    <dxi-item dataField="user.membership.membershipType" [disabled]="true">
+        <dxo-label
+        text="Membership Type">
+        </dxo-label>  
+    </dxi-item>
+        
+    </dxi-item>
+        <dxi-item itemType="group" caption="Reservation Info">
+            <dxi-item dataField="startDate"
+            editorType="dxDateBox"
+            [editorOptions]="{
+                    type: 'datetime',
+                    adaptivityEnabled: true,
+                    height: 36,
+                    width: '100%',
+                    min: minStartDate
+                }">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxi-validation-rule type="custom"
+                         [reevaluate]="true"
+                         [validationCallback]="timeValidation">
+    </dxi-validation-rule>
+    <dxi-validation-rule type="async" [message]="asyncMessageString" [validationCallback]="asyncValidationTimeSlot"></dxi-validation-rule>
+  </dxi-item>
+  <dxi-item dataField="endDate"
+            editorType="dxDateBox"
+            [editorOptions]="{
+                    type: 'datetime',
+                    height: 36,
+                    width: '100%',
+                    readOnly: true
+                }">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+  </dxi-item>
+            <dxi-item dataField="numberOfPlayers"
+            editorType="dxSelectBox"
+            [editorOptions]="{
+                    dataSource: playersDropdown,
+                    readOnly: isStanding
+                }">
+            <dxi-validation-rule type="required"></dxi-validation-rule>
         </dxi-item>
-        <dxi-item itemType="group" caption="Personal Data">
-            <dxi-item dataField="BirthDate"></dxi-item>
-            <dxi-item itemType="group" caption="Home Address">
-                <dxi-item dataField="Address"></dxi-item>
-                <dxi-item dataField="City"></dxi-item>
-                <dxi-item dataField="State"></dxi-item>
-                <dxi-item dataField="Zipcode"></dxi-item>
-            </dxi-item>
+        <dxi-item dataField="isApproved"
+        editorType="dxCheckBox"
+        [visible]="isStanding"
+        [editorOptions]="{ readOnly: true }">
+<dxo-label text="Approved">
+</dxo-label>
+</dxi-item>
+<dxi-item dataField="notes"
+        editorType="dxTextArea"
+        [editorOptions]="{
+                height: 55
+            }">
+</dxi-item>
         </dxi-item>
-        <dxi-item itemType="group" caption="Contact Information">
-            <dxi-item itemType="tabbed">
-                <dxo-tab-panel-options [deferRendering]="false">
-                </dxo-tab-panel-options>
-                <dxi-tab title="Phone">
-                    <dxi-item dataField="Phone"></dxi-item>
-                </dxi-tab>
-                <dxi-tab title="Skype">
-                    <dxi-item dataField="Skype"></dxi-item>
-                </dxi-tab>
-                <dxi-tab title="Email">
-                    <dxi-item dataField="Email"></dxi-item>
-                </dxi-tab>
-            </dxi-item>
-        </dxi-item>
- </dx-form> -->
+     
+ </dx-form>

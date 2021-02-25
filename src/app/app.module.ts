@@ -8,7 +8,7 @@ import { AuthService, ScreenService, AppInfoService } from './shared/services';
 import { UnauthenticatedContentModule } from './unauthenticated-content';
 import { AppRoutingModule } from './app-routing.module';
 import { CreateReservationComponent } from './pages/reservation/create-reservation/create-reservation.component';
-import { DxFormModule, DxSelectBoxComponent, DxSelectBoxModule } from 'devextreme-angular';
+import { DxButtonModule, DxFormModule, DxSelectBoxComponent, DxSelectBoxModule } from 'devextreme-angular';
 import { OneTimeReservationComponent } from './shared/components/one-time-reservation/one-time-reservation.component';
 import { StandingReservationComponent } from './shared/components/standing-reservation/standing-reservation.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -31,7 +31,8 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     DxFormModule,
     DxSelectBoxModule,
-    HttpClientModule
+    HttpClientModule,
+    DxButtonModule,
   ],
   providers: [AuthService, ScreenService, AppInfoService],
   bootstrap: [AppComponent]

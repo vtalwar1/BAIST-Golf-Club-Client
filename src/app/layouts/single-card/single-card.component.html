@@ -4,6 +4,15 @@
       <div class="title">{{title}}</div>
       <div class="description">{{description}}</div>
     </div>
+    <dx-button
+    class="user-button authorization"
+    width="210px"
+    height="100%"
+    stylingMode="text">
+    <div *dxTemplate="let data of 'content'">
+      <app-user-panel [user]="user" [menuItems]="userMenuItems" menuMode="context"></app-user-panel>
+    </div>
+  </dx-button>
     <ng-content></ng-content>
   </div>
 </dx-scroll-view>

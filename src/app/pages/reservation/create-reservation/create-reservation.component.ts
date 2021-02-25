@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import notify from 'devextreme/ui/notify';
+import { Reservation } from 'src/app/shared/models/reservation';
+import { User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services';
 
 @Component({
@@ -8,11 +11,19 @@ import { AuthService } from 'src/app/shared/services';
 })
 export class CreateReservationComponent implements OnInit {
 
-  constructor(private authService: AuthService) { }
-
+public reservationData: Reservation;
+public reservationTypeDisabled: boolean = true;
+public reservationTypeSelectedValue: string;
+public isStanding: boolean = false;
+public user: User;
+  constructor(private authService: AuthService) {
+   }
+  
   ngOnInit(): void {
-
-   
+    this.reservationData = new Reservation();
+    this.user = this.authService.getUser().data;
+    this.reservationTypeDisabled = !(this.user.isStaff || this.user.membership.membershipType === "Shareholder");
+    if(this.reservationTypeDisabled)
+      this.reservationTypeSelectedValue = "O";
   }
-
 }

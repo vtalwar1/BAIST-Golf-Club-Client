@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { User } from '../models/user';
 import { BaseHttpService } from './base-http.service';
 
@@ -19,5 +20,13 @@ export class UserService extends BaseHttpService {
 
   public getUserById(id:string): Observable<User> {
     return this.http.get<User>(this.apiUrl + '/' + id)
+  }
+
+  public getUserByMembershipNumber(membershipNumber:string): Observable<User> {
+    return this.http.get<User>(this.apiUrl + '/GetUserByMembershipNumber/' + membershipNumber).pipe(tap((result) => {
+      if (result != null) {
+        result.fullName = result.firstName + ' ' + result.lastName;
+      }
+    }));
   }
 }
