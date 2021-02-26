@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Reservation } from '../models/reservation';
 import { ReservationDTO } from '../models/reservationDTO';
+import { StandingReservation } from '../models/standing-reservation';
 import { BaseHttpService } from './base-http.service';
 
 @Injectable({
@@ -47,6 +48,10 @@ export class ReservationService extends BaseHttpService {
 
   public updateReservation(reservationData: ReservationDTO): Observable<boolean> {
     return this.http.put<boolean>(this.apiUrl + '/' + reservationData.reservationId, reservationData);
+  }
+
+  public getAllStandingReservationsForApproval(activeOnly: boolean): Observable<StandingReservation[]> {
+    return this.http.get<StandingReservation[]>(this.apiUrl + '/GetAllStandingReservationsForApproval/' + activeOnly)
   }
 
 

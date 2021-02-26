@@ -32,7 +32,7 @@ export class ReservationListComponent implements OnInit {
             data: data,
           }
         })
-    })
+    });
   }
 
   fullNameColumn_calculateCellValue (rowData) {

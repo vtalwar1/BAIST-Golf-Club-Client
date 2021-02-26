@@ -24,10 +24,10 @@
     dataField="user.membership.membershipNumber"
     caption="Membership Number"
     [groupIndex]="1"
-    [hidingPriority]="2">
+    [hidingPriority]="10">
   </dxi-column>
 
-  <dxi-column caption="Member Name" [calculateCellValue]="fullNameColumn_calculateCellValue"></dxi-column>
+  <dxi-column caption="Member Name" [hidingPriority]="2" [calculateCellValue]="fullNameColumn_calculateCellValue"></dxi-column>
 
   <dxi-column
     dataField="resevationNumber"
@@ -38,20 +38,20 @@
     dataType="date"
     format="dd/MM/yyyy hh:mm"
     caption="Start Time"
-    [hidingPriority]="6">
+    [hidingPriority]="9">
   </dxi-column>
   <dxi-column
     dataField="endDate"
     caption="End Time"
     dataType="date"
     format="dd/MM/yyyy hh:mm"
-    [hidingPriority]="5">
+    [hidingPriority]="7">
   </dxi-column>
 
   <dxi-column
     dataField="numberOfPlayers"
     caption="Players"
-    [hidingPriority]="5">
+    [hidingPriority]="6">
   </dxi-column>
 
   <dxi-column
@@ -64,10 +64,10 @@
     dataField="createdDateTime"
     dataType="date"
     format="dd/MM/yyyy hh:mm"
-    caption="createdTime"
-    [hidingPriority]="5">
+    caption="Created Time"
+    [hidingPriority]="4">
   </dxi-column>
 
-  <dxi-column caption="Member Name" [calculateCellValue]="reservationStatus_calculateCellValue" sortOrder="desc" allowSorting="true" [groupIndex]="2" allowGrouping="true"></dxi-column>
+  <dxi-column caption="Member Name" [hidingPriority]="3" [calculateCellValue]="reservationStatus_calculateCellValue" sortOrder="desc" allowSorting="true" [groupIndex]="2" allowGrouping="true"></dxi-column>
 
 </dx-data-grid>

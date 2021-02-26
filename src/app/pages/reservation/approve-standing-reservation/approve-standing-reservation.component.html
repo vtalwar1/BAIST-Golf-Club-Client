@@ -1,1 +1,81 @@
-<p>approve-standing-reservation works!</p>
+<h2 class="content-block">Approve Standing Reservation</h2>
+
+<dx-data-grid class="dx-card wide-card"
+  [dataSource]="dataSource"
+  [showBorders]="false"
+  [focusedRowEnabled]="true"
+  [focusedRowIndex]="0"
+  [columnAutoWidth]="true"
+  [height]="490"
+  [columnHidingEnabled]="true">
+
+  <dxo-paging [pageSize]="20"></dxo-paging>
+  <dxo-pager [showPageSizeSelector]="true" [showInfo]="true"></dxo-pager>
+  <dxo-filter-row [visible]="true"></dxo-filter-row>
+  <dxo-grouping 
+  [contextMenuEnabled]="true"> 
+</dxo-grouping>
+<dxo-group-panel 
+  [visible]="true"> <!-- or "auto" -->
+</dxo-group-panel>
+
+<dxi-column [width]="170" [hidingPriority]="15" caption="Approve" [allowFiltering]="false"
+  [allowSorting]="false" cellTemplate="cellTemplate"></dxi-column>
+
+  <div *dxTemplate="let data of 'cellTemplate'">
+    <dx-button style="font-size: 12px;"
+        stylingMode="contained"
+        type="success"
+        text="Approve"       
+        icon="check"
+        [width]="160"
+        [disabled]="loading"
+        (onClick)="approveButtonClick($event, data)">
+    </dx-button>
+</div>
+
+  <dxi-column
+    dataField="user.membership.membershipNumber"
+    caption="Membership Number"
+    [hidingPriority]="8">
+  </dxi-column>
+
+  <dxi-column caption="Member Name" [calculateCellValue]="fullNameColumn_calculateCellValue"></dxi-column>
+
+  <dxi-column
+    dataField="standingReservationNumber"
+    [hidingPriority]="10">
+  </dxi-column>
+  <dxi-column
+    dataField="startDate"
+    dataType="date"
+    format="dd/MM/yyyy hh:mm"
+    caption="Start Time"
+    sortOrder="asc" 
+    sortIndex="0"
+    [hidingPriority]="9">
+  </dxi-column>
+  <dxi-column
+    dataField="endDate"
+    caption="End Time"
+    dataType="date"
+    format="dd/MM/yyyy hh:mm"
+    [hidingPriority]="7">
+  </dxi-column>
+
+  <dxi-column
+    dataField="createdBy"
+    caption="Created By"
+    [hidingPriority]="6">
+  </dxi-column>
+
+  <dxi-column
+    dataField="createdDateTime"
+    dataType="date"
+    format="dd/MM/yyyy hh:mm"
+    caption="Created Time"
+    [hidingPriority]="5">
+  </dxi-column>
+
+  
+</dx-data-grid>
