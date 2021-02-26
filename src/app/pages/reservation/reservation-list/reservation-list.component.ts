@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import DataSource from 'devextreme/data/data_source';
 import notify from 'devextreme/ui/notify';
-import { Reservation } from '../../models/reservation';
-import { User } from '../../models/user';
-import { AuthService } from '../../services';
-import { ReservationService } from '../../services/reservation.service';
+import { Reservation } from '../../../shared/models/reservation';
+import { User } from '../../../shared/models/user';
+import { AuthService } from '../../../shared/services';
+import { ReservationService } from '../../../shared/services/reservation.service';
 import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 

@@ -173,18 +173,15 @@ export class AuthService {
         items: [
           {
             text: 'New Reservation ',
-            path: '/create-reservation',
-            icon: 'add'
+            path: '/create-reservation'
           },
           {
             text: 'Reservation List',
-            path: '/reservation-list',
-            icon: 'bulletlist'
+            path: '/reservation-list'
           },
           {
-            text: 'Approve Standing Reservations',
-            path: '/approve-standing-reservations',
-            icon: 'bulletlist',
+            text: 'Approve Reservations',
+            path: '/approve-standing-reservation',
             visible: this._user.isStaff
           }
         ]

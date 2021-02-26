@@ -1,0 +1,22 @@
+<h2 class="content-block">Update Reservation</h2>
+<div class="content-block">
+    <div class="dx-card responsive-paddings">
+        <div *ngIf="!isValid;else reservationComponent">
+            Invalid Reservation Id
+        </div>
+        
+        <ng-template #reservationComponent>
+            <dx-scroll-view #scrollView
+            id="scrollview" style="height: 460px;">
+            <div>
+                <app-one-time-reservation
+                [isNew]="isNew"
+                [reservationData]="reservationData">
+            </app-one-time-reservation>
+            </div>
+            
+        </dx-scroll-view>
+        </ng-template>
+        
+    </div>
+</div>   

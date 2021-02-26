@@ -8,12 +8,13 @@ import { AuthService, ScreenService, AppInfoService } from './shared/services';
 import { UnauthenticatedContentModule } from './unauthenticated-content';
 import { AppRoutingModule } from './app-routing.module';
 import { CreateReservationComponent } from './pages/reservation/create-reservation/create-reservation.component';
-import { DxButtonModule, DxDataGridModule, DxFormModule, DxSelectBoxComponent, DxSelectBoxModule } from 'devextreme-angular';
+import { DxButtonModule, DxDataGridModule, DxFormModule, DxScrollViewModule, DxSelectBoxComponent, DxSelectBoxModule } from 'devextreme-angular';
 import { OneTimeReservationComponent } from './shared/components/one-time-reservation/one-time-reservation.component';
 import { StandingReservationComponent } from './shared/components/standing-reservation/standing-reservation.component';
 import { HttpClientModule } from '@angular/common/http';
-import { ReservationListComponent } from './shared/components/reservation-list/reservation-list.component';
-import { UpdateReservationComponent } from './shared/components/update-reservation/update-reservation.component';
+import { ReservationListComponent } from './pages/reservation/reservation-list/reservation-list.component';
+import { UpdateReservationComponent } from './pages/reservation/update-reservation/update-reservation.component';
+import { ApproveStandingReservationComponent } from './pages/reservation/approve-standing-reservation/approve-standing-reservation.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { UpdateReservationComponent } from './shared/components/update-reservati
     OneTimeReservationComponent,
     StandingReservationComponent,
     ReservationListComponent,
-    UpdateReservationComponent
+    UpdateReservationComponent,
+    ApproveStandingReservationComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +40,7 @@ import { UpdateReservationComponent } from './shared/components/update-reservati
     HttpClientModule,
     DxButtonModule,
     DxDataGridModule,
+    DxScrollViewModule
   ],
   providers: [AuthService, ScreenService, AppInfoService],
   bootstrap: [AppComponent]

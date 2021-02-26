@@ -16,6 +16,7 @@ public reservationTypeDisabled: boolean = true;
 public reservationTypeSelectedValue: string;
 public isStanding: boolean = false;
 public user: User;
+public isNew: boolean = true;
   constructor(private authService: AuthService) {
    }
   

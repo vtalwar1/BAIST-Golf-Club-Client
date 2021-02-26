@@ -1,10 +1,7 @@
 import { Location } from '@angular/common';
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { DxSelectBoxComponent } from 'devextreme-angular';
 import notify from 'devextreme/ui/notify';
-import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
-import { CreateReservationComponent } from 'src/app/pages/reservation/create-reservation/create-reservation.component';
-import { Reservation } from '../../models/reservation';
 import { ReservationDTO } from '../../models/reservationDTO';
 import { User } from '../../models/user';
 import { AuthService } from '../../services';
@@ -54,18 +51,18 @@ public asyncMessageString: string;
     text: "Create",
     type: "success",
     useSubmitBehavior: true
-}
+};
 
 public updateButtonOptions: any = {
   text: "Update",
   type: "success",
   useSubmitBehavior: true
-}
+};
 
 public cancelButtonOptions: any;
 public editorOptions: any = {
   readOnly: 'true'
-}
+};
 
 public loading: boolean = false;
   constructor(private authService: AuthService, private reservationService: ReservationService, private userService: UserService, private location: Location) {
@@ -79,21 +76,23 @@ public loading: boolean = false;
    }
   ngOnInit(): void {
     this.currentUser = this.authService.getUser().data as User;
-    if(!this.currentUser.isStaff) {
+    if(!this.currentUser.isStaff && this.isNew) {
       this.reservationData.user = this.currentUser;
     }
-    this.reservationTypeDisabled = !(this.currentUser.isStaff || this.currentUser.membership.membershipType === "Shareholder");
-    if(this.reservationTypeDisabled) {
-      this.reservationTypeSelectedValue = "O";
-      this.selectBox.value = "O";
-    }
-
-    if (!this.isNew) {
+    
+      if (!this.isNew) {
       this.isMembershipNumberDisabled = true;
+      this.reservationTypeDisabled = true;
       this.editorOptions = {
         readOnly: this.isMembershipNumberDisabled
       }
     } else {
+
+      this.reservationTypeDisabled = !(this.currentUser.isStaff || this.currentUser.membership.membershipType === "Shareholder");
+    if(this.reservationTypeDisabled) {
+      this.reservationTypeSelectedValue = "O";
+      this.selectBox.value = "O";
+    }
       let date = new Date();
       this.reservationData.isStanding = this.isStanding;
       this.reservationData.startDate = new Date(date.setHours(MIN_START_TIME, 0, 0, 0));
@@ -139,8 +138,8 @@ public loading: boolean = false;
       if (MIN_START_TIME > time || MAX_END_TIME < time) {
         data.rule.message = "This time is unavailable. Opening hours 09:00 AM - 7:00 PM";
         return false;
-      } else if (data.value.getUTCDate() === currentTime.getUTCDate() ) {
-        if(data.value.getUTCHours() < currentTime.getUTCHours()) {
+      } else if (data.value.getDate() === currentTime.getDate() ) {
+        if(data.value.getHours() < currentTime.getHours()) {
         data.rule.message = "Can not select the time in past";
         return false;
         } else {          
@@ -149,7 +148,7 @@ public loading: boolean = false;
       } else {
         if(this.reservationData.user){
         // Check for membership
-        if(this.reservationData.user.membership.membershipType === "Silver") {
+        if(this.reservationData.user.membership && this.reservationData.user.membership.membershipType === "Silver") {
           if(selectedDate.getDay() == 0 || selectedDate.getDay() == 6) {
             if(time <= MIN_START_TIME_SILVER_WEEKEND) {
               data.rule.message = "Silver Member can only reserve for after 11:00 AM on Weekends";
@@ -165,7 +164,7 @@ public loading: boolean = false;
               return true;
             }
           }
-        } else if (this.reservationData.user.membership.membershipType === "Bronze") {
+        } else if (this.reservationData.user.membership && this.reservationData.user.membership.membershipType === "Bronze") {
           if(selectedDate.getDay() == 0 || selectedDate.getDay() == 6) {
             if(time <= MIN_START_TIME_BRONZE_WEEKEND) {
               data.rule.message = "Bronze Member can only reserve for after 1:00 PM on Weekends";
@@ -189,43 +188,62 @@ public loading: boolean = false;
     } 
   }
 
-  asyncValidationTimeSlot = (params) => {
+  asyncValidationTimeSlot = () => {
     var isValid = false;
     return new Promise((resolve) => {
       
       this.reservationService.getAllReservations(true).subscribe(result => {
-        if(this.reservationData.user && result.filter(x => x.userId == this.reservationData.user.userId).length >= 4 ) {
-          isValid = false;
-          this.asyncMessageString = "Maximum of 4 active reservations are allowed per user"
-        }
-        else if(this.reservationData.user && result.find(x => (new Date(x.startDate).toLocaleDateString() == this.reservationData.startDate.toLocaleDateString()) && x.userId == this.reservationData.user.userId))
-        {
-          isValid = false;
-          this.asyncMessageString = "Reservation already exists for this date. Please select another date."
-
-        }
-        else{
-          var playersCount = 0;
-          result.forEach(x => {
-            if(new Date(x.startDate).toDateString() == this.reservationData.startDate.toDateString()) {
-              playersCount = playersCount + x.numberOfPlayers;
-            }
-          });
-          isValid = (playersCount + this.reservationData.numberOfPlayers) <= 4;
-          if(!isValid) {
-          if(playersCount < 4 ) {
-            var slotLeft = 4 - playersCount;
-            this.asyncMessageString = "Only " + slotLeft + " players are avaiable to select."
-          }else {
-            this.asyncMessageString = "Time slot is not available"
+        if(this.isNew) {
+          if(this.reservationData.user && result.filter(x => x.userId == this.reservationData.user.userId).length >= 4 ) {
+            isValid = false;
+            this.asyncMessageString = "Maximum of 4 active reservations are allowed per user"
           }
-        }
-        }
+          else if(this.reservationData.user && result.find(x => (new Date(x.startDate).toLocaleDateString() == this.reservationData.startDate.toLocaleDateString()) && x.userId == this.reservationData.user.userId))
+          {
+            isValid = false;
+            this.asyncMessageString = "Reservation already exists for this date. Please select another date."
+  
+          }
+          else{
+            var playersCount = 0;
+            result.forEach(x => {
+              if(new Date(x.startDate).toDateString() == this.reservationData.startDate.toDateString()) {
+                playersCount = playersCount + x.numberOfPlayers;
+              }
+            });
+            isValid = (playersCount + this.reservationData.numberOfPlayers) <= 4;
+            if(!isValid) {
+            if(playersCount < 4 ) {
+              var slotLeft = 4 - playersCount;
+              this.asyncMessageString = "Only " + slotLeft + " players are avaiable to select."
+            }else {
+              this.asyncMessageString = "Time slot is not available"
+            }
+          }
+          }
+  
+          resolve(isValid);
+        }  else {
+          var playersCount = 0;
+            result.filter(x => x.reservationId != this.reservationData.reservationId).forEach(x => {
+              if(new Date(x.startDate).toDateString() == this.reservationData.startDate.toDateString()) {
+                playersCount = playersCount + x.numberOfPlayers;
+              }
+            });
+            isValid = (playersCount + this.reservationData.numberOfPlayers) <= 4;
+            if(!isValid) {
+            if(playersCount < 4 ) {
+              var slotLeft = 4 - playersCount;
+              this.asyncMessageString = "Only " + slotLeft + " players are avaiable to select."
+            }else {
+              this.asyncMessageString = "Time slot is not available"
+            }
+          }
 
-        resolve(isValid);
-   
+          resolve(isValid);
+        }
       },
-      error => {
+      () => {
         isValid = true;
         resolve(true);
       })
@@ -250,7 +268,7 @@ public loading: boolean = false;
           resolve(false);
         }
       },
-      error => {
+      () => {
         resolve(false);
       })
   });    
@@ -265,7 +283,8 @@ public loading: boolean = false;
     result.setDate(result.getDate() + weeks * 7);
     return result;
   }
-  fieldDataChanged(e: any) {
+  fieldDataChanged = (e: any) => {
+    this.loading = false;
     if (e.dataField === "startDate") {
       if(!this.isStanding) {
         this.reservationData.endDate = this.addTime(e.value, MAX_TIME_GAME);
@@ -297,12 +316,33 @@ public loading: boolean = false;
       }, "error", 3000);
        }
        this.loading = false;  
-      }, error => {
+      }, () => {
         notify({
           message: "Reservation failed.",
       }, "error", 3000);
         this.loading = false;
       })
+    } else {
+      this.reservationData.lastModifiedBy = this.currentUser.email;
+      this.reservationService.updateReservation(this.reservationData).subscribe(result => {
+        console.log(result);
+        if(result)
+        {
+         notify({
+           message: "Reservation updated.",
+       }, "success", 3000); 
+        } else {
+         notify({
+           message: "Reservation update failed.",
+       }, "error", 3000);
+        }
+        this.loading = false;  
+       }, () => {
+         notify({
+           message: "Reservation update failed.",
+       }, "error", 3000);
+         this.loading = false;
+       })
     }
 }
   reInitReservationData() {

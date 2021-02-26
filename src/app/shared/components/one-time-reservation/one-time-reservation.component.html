@@ -1,5 +1,31 @@
+<dx-form [colCount]="2" style="margin-bottom: 10px;">
+    <dxi-item #selectBox dataField="subDomainId"
+    editorType="dxSelectBox"
+    [editorOptions]="{
+        dataSource: reservationTypes,
+        valueExpr: 'id',
+        displayExpr: 'description',
+        value: reservationTypeSelectedValue,
+        disabled: reservationTypeDisabled,
+        openOnFieldClick: true,
+        minSearchLength: 0,
+        onValueChanged: onReservationTypeValueChange }">
+        <dxo-label
+        text="Select Reservation Type">
+        </dxo-label>  
 
-    <div class="dx-fieldset">
+        <!-- <dx-select-box #selectBox
+        [dataSource]="reservationTypes "
+        displayExpr="description"
+        valueExpr="id"
+        [value]="reservationTypeSelectedValue"
+        [disabled]="reservationTypeDisabled"
+        (onValueChanged)="onReservationTypeValueChange($event)"></dx-select-box> -->
+
+    </dxi-item>
+</dx-form>
+    
+    <!-- <div class="dx-fieldset" style="margin-right: 0px; margin-left: 0px;">
         <div class="dx-field">
             <div class="dx-field-label">Select Reservation Type</div>
             <div class="dx-field-value">
@@ -12,11 +38,12 @@
             (onValueChanged)="onReservationTypeValueChange($event)"></dx-select-box>
             </div>
         </div>
-    </div>
+    </div> -->
 <form action="action" (submit)="onFormSubmit($event)">
 <dx-form id="form"
     [formData]="reservationData"
     [colCount]="2"
+    [showValidationSummary]="true"
     (onFieldDataChanged)="fieldDataChanged($event)">
     <dxi-item itemType="group" caption="User Info">
     <dxi-item dataField="user.membership.membershipNumber" 
@@ -24,7 +51,7 @@
         <dxo-label
         text="Membership Number">
         </dxo-label>  
-        <dxi-validation-rule type="required"></dxi-validation-rule>
+        <dxi-validation-rule type="required" message="Membership Number is required"></dxi-validation-rule>
         <dxi-validation-rule type="async" message="Invalid Membership Number" [validationCallback]="asyncValidationMembershipNumber"></dxi-validation-rule>
     </dxi-item>
 

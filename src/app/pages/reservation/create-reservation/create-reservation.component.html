@@ -1,9 +1,16 @@
 <h2 class="content-block">Create Reservation</h2>
 <div class="content-block">
-    <div class="dx-card responsive-paddings">
-        <app-one-time-reservation
-            isNew="false"
+    <div class="dx-card responsive-paddings" style="height: 490px;">
+        <dx-scroll-view #scrollView
+        id="scrollview" style="height: 460px;">
+        <div>
+            <app-one-time-reservation
+            [isNew]="isNew"
             [reservationData]="reservationData">
         </app-one-time-reservation>
+        </div>
+        
+    </dx-scroll-view>
+        
     </div>
-    </div>   
+</div>   

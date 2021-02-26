@@ -5,12 +5,18 @@ import { AuthGuardService } from './shared/services';
 import { HomeComponent } from './pages/home/home.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { TasksComponent } from './pages/tasks/tasks.component';
-import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
+import { DxDataGridModule, DxFormModule, DxScrollViewModule } from 'devextreme-angular';
 import { CreateReservationComponent } from './pages/reservation/create-reservation/create-reservation.component';
-import { ReservationListComponent } from './shared/components/reservation-list/reservation-list.component';
-import { UpdateReservationComponent } from './shared/components/update-reservation/update-reservation.component';
+import { ReservationListComponent } from './pages/reservation/reservation-list/reservation-list.component';
+import { UpdateReservationComponent } from './pages/reservation/update-reservation/update-reservation.component';
+import { ApproveStandingReservationComponent } from './pages/reservation/approve-standing-reservation/approve-standing-reservation.component';
 
 const routes: Routes = [
+  {
+    path: 'approve-standing-reservation',
+    component: ApproveStandingReservationComponent,
+    canActivate: [ AuthGuardService ]
+  },
   {
     path: 'update-reservation',
     component: UpdateReservationComponent,
@@ -68,9 +74,10 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), DxDataGridModule, DxFormModule],
+  imports: [RouterModule.forRoot(routes), DxDataGridModule, DxFormModule, DxScrollViewModule],
   providers: [AuthGuardService],
   exports: [RouterModule],
   declarations: [HomeComponent, ProfileComponent, TasksComponent]
 })
 export class AppRoutingModule { }
+ 
