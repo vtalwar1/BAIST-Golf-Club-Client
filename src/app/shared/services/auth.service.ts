@@ -56,6 +56,7 @@ export class AuthService {
   set lastAuthenticatedPath(value: string) {
     this._lastAuthenticatedPath = value;
   }
+  public navItems: any;
 
   constructor(private router: Router, private userService: UserService) { }
 
@@ -67,6 +68,7 @@ export class AuthService {
           this._user = result;
           this._user.fullName = this._user.firstName + ' ' + this._user.lastName; 
           sessionStorage.setItem('sessionToken', this._user.userId);
+          this.navItems = this.createNavItems();
         }
       }));
     }
@@ -79,6 +81,7 @@ export class AuthService {
        this._user = result;
        this._user.fullName = this._user.firstName + ' ' + this._user.lastName; 
        sessionStorage.setItem('sessionToken', this._user.userId);
+       this.navItems = this.createNavItems();
      }
    }));
  }
@@ -155,6 +158,38 @@ export class AuthService {
     this._user = null;
     sessionStorage.removeItem('sessionToken');
     this.router.navigate(['/login-form']);
+  }
+
+  createNavItems(): any {
+    return [
+      {
+        text: 'Home',
+        path: '/home',
+        icon: 'home'
+      },
+      {
+        text: 'Reservations',
+        icon: 'event',
+        items: [
+          {
+            text: 'New Reservation ',
+            path: '/create-reservation',
+            icon: 'add'
+          },
+          {
+            text: 'Reservation List',
+            path: '/reservation-list',
+            icon: 'bulletlist'
+          },
+          {
+            text: 'Approve Standing Reservations',
+            path: '/approve-standing-reservations',
+            icon: 'bulletlist',
+            visible: this._user.isStaff
+          }
+        ]
+      }
+    ];
   }
 }
 

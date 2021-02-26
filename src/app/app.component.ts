@@ -15,15 +15,17 @@ export class AppComponent  {
   title: string;
   description: string;
 
-  constructor(private authService: AuthService, private screen: ScreenService, public appInfo: AppInfoService, private router: Router
+  constructor(public authService: AuthService, private screen: ScreenService, public appInfo: AppInfoService, private router: Router
     , private authGuardService: AuthGuardService) {
     if(!this.hasActiveSession()) {
       this.router.navigate(['/login-form']);
       this.authGuardService.setAppInitialized();
     } else {
       this.authService.logInSilent(this.getActiveSessionToken()).subscribe(result => {
-        if(result)
+        if(result) {          
           this.authGuardService.setAppInitialized();
+          
+        }
           else
         {
           this.title = "Active Session";
@@ -37,7 +39,9 @@ export class AppComponent  {
     }
 
     
+    
    }
+  
 
   isAuthenticated() {
     return this.authService.loggedIn;
@@ -50,4 +54,6 @@ export class AppComponent  {
   getActiveSessionToken() {
     return this.authService.getActiveSessionToken;
   }
+
+  
 }

@@ -13,13 +13,14 @@
             </div>
         </div>
     </div>
-
+<form action="action" (submit)="onFormSubmit($event)">
 <dx-form id="form"
     [formData]="reservationData"
     [colCount]="2"
     (onFieldDataChanged)="fieldDataChanged($event)">
     <dxi-item itemType="group" caption="User Info">
-    <dxi-item dataField="user.membership.membershipNumber" [disabled]="isMembershipNumberDisabled">
+    <dxi-item dataField="user.membership.membershipNumber" 
+    [editorOptions]="editorOptions">
         <dxo-label
         text="Membership Number">
         </dxo-label>  
@@ -89,5 +90,30 @@
             }">
 </dxi-item>
         </dxi-item>
+
+        <dxi-item 
+            itemType="button"
+            horizontalAlignment="left"
+            [buttonOptions]="createButtonOptions"
+            [visible]="isNew"
+            [disabled]="loading"
+            >
+        </dxi-item>
+
+        <dxi-item 
+            itemType="button"
+            horizontalAlignment="left"
+            [buttonOptions]="updateButtonOptions"
+            [visible]="!isNew"
+            [disabled]="loading">
+        </dxi-item>
+
+        <dxi-item 
+            itemType="button"
+            horizontalAlignment="left"
+            [buttonOptions]="cancelButtonOptions">
+        </dxi-item>
+
      
  </dx-form>
+    </form>

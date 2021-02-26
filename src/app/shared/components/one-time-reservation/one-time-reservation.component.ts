@@ -1,7 +1,9 @@
-import { TranslationWidth } from '@angular/common';
+import { Location } from '@angular/common';
 import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { DxSelectBoxComponent } from 'devextreme-angular';
 import notify from 'devextreme/ui/notify';
+import { connectableObservableDescriptor } from 'rxjs/internal/observable/ConnectableObservable';
+import { CreateReservationComponent } from 'src/app/pages/reservation/create-reservation/create-reservation.component';
 import { Reservation } from '../../models/reservation';
 import { ReservationDTO } from '../../models/reservationDTO';
 import { User } from '../../models/user';
@@ -47,7 +49,26 @@ public asyncMessageString: string;
   private currentUser: User = new User();
   public minStartDate: Date = new Date();
   public isMembershipNumberDisabled: boolean = true;
-  constructor(private authService: AuthService, private reservationService: ReservationService, private userService: UserService) {
+
+  public createButtonOptions: any = {
+    text: "Create",
+    type: "success",
+    useSubmitBehavior: true
+}
+
+public updateButtonOptions: any = {
+  text: "Update",
+  type: "success",
+  useSubmitBehavior: true
+}
+
+public cancelButtonOptions: any;
+public editorOptions: any = {
+  readOnly: 'true'
+}
+
+public loading: boolean = false;
+  constructor(private authService: AuthService, private reservationService: ReservationService, private userService: UserService, private location: Location) {
     this.reservationTypes = [{
       id: "O",
       description: "One-Time Reservation",
@@ -56,7 +77,6 @@ public asyncMessageString: string;
     description: "Standing Reservation",
   }];
    }
-
   ngOnInit(): void {
     this.currentUser = this.authService.getUser().data as User;
     if(!this.currentUser.isStaff) {
@@ -70,6 +90,9 @@ public asyncMessageString: string;
 
     if (!this.isNew) {
       this.isMembershipNumberDisabled = true;
+      this.editorOptions = {
+        readOnly: this.isMembershipNumberDisabled
+      }
     } else {
       let date = new Date();
       this.reservationData.isStanding = this.isStanding;
@@ -77,10 +100,22 @@ public asyncMessageString: string;
       this.reservationData.endDate = this.addTime(this.reservationData.startDate, MAX_TIME_GAME);
       this.reservationData.numberOfPlayers = 1;
       this.reservationData.notes = "";
+      this.reservationData.createdBy = this.currentUser.email;
       this.isMembershipNumberDisabled = !this.currentUser.isStaff;
+      this.editorOptions = {
+        readOnly: this.isMembershipNumberDisabled
+      }
+      
     }
     
       this.onReservationTypeValueChange =  this.onReservationTypeValueChange.bind(this);
+
+      this.cancelButtonOptions = {
+        text: "Cancel",
+        type: "danger",
+        useSubmitBehavior: false,
+        onClick: this.onCancelClick,
+      }
   }
 
   onReservationTypeValueChange = (e) => {
@@ -105,13 +140,14 @@ public asyncMessageString: string;
         data.rule.message = "This time is unavailable. Opening hours 09:00 AM - 7:00 PM";
         return false;
       } else if (data.value.getUTCDate() === currentTime.getUTCDate() ) {
-        if(data.value.getUTCHours() > currentTime.getUTCHours()) {
+        if(data.value.getUTCHours() < currentTime.getUTCHours()) {
         data.rule.message = "Can not select the time in past";
         return false;
         } else {          
           return true
         }
       } else {
+        if(this.reservationData.user){
         // Check for membership
         if(this.reservationData.user.membership.membershipType === "Silver") {
           if(selectedDate.getDay() == 0 || selectedDate.getDay() == 6) {
@@ -147,31 +183,47 @@ public asyncMessageString: string;
           }
         }
         return true;
+      }else {
+        return true;
       }
+    } 
   }
 
   asyncValidationTimeSlot = (params) => {
     var isValid = false;
     return new Promise((resolve) => {
       
-      this.reservationService.getAllReservations().subscribe(result => {
-        var playersCount = 0;
-        result.forEach(x => {
-          if(x.startDate === this.reservationData.startDate) {
-            playersCount = playersCount + x.numberOfPlayers;
-          }
-        });
-        isValid = (playersCount + this.reservationData.numberOfPlayers) <= 4;
-        if(!isValid) {
-        if(playersCount < 4 ) {
-          var slotLeft = 4 - playersCount;
-          this.asyncMessageString = "Only " + slotLeft + " players are avaiable to select."
-        }else {
-          this.asyncMessageString = "Time slot is not available"
+      this.reservationService.getAllReservations(true).subscribe(result => {
+        if(this.reservationData.user && result.filter(x => x.userId == this.reservationData.user.userId).length >= 4 ) {
+          isValid = false;
+          this.asyncMessageString = "Maximum of 4 active reservations are allowed per user"
         }
-      }
-        
+        else if(this.reservationData.user && result.find(x => (new Date(x.startDate).toLocaleDateString() == this.reservationData.startDate.toLocaleDateString()) && x.userId == this.reservationData.user.userId))
+        {
+          isValid = false;
+          this.asyncMessageString = "Reservation already exists for this date. Please select another date."
+
+        }
+        else{
+          var playersCount = 0;
+          result.forEach(x => {
+            if(new Date(x.startDate).toDateString() == this.reservationData.startDate.toDateString()) {
+              playersCount = playersCount + x.numberOfPlayers;
+            }
+          });
+          isValid = (playersCount + this.reservationData.numberOfPlayers) <= 4;
+          if(!isValid) {
+          if(playersCount < 4 ) {
+            var slotLeft = 4 - playersCount;
+            this.asyncMessageString = "Only " + slotLeft + " players are avaiable to select."
+          }else {
+            this.asyncMessageString = "Time slot is not available"
+          }
+        }
+        }
+
         resolve(isValid);
+   
       },
       error => {
         isValid = true;
@@ -182,7 +234,7 @@ public asyncMessageString: string;
     }
 
     asyncValidationMembershipNumber = (e) => {
-    return new Promise((resolve) => {      
+      return new Promise((resolve) => {    
       this.userService.getUserByMembershipNumber(e.value).subscribe(result => { 
         if(result && result.membershipNumber) {     
           this.reservationData.user = result;
@@ -194,6 +246,8 @@ public asyncMessageString: string;
             this.reservationTypeDisabled = false;
           }
           resolve(true);
+        } else {
+          resolve(false);
         }
       },
       error => {
@@ -223,4 +277,50 @@ public asyncMessageString: string;
       }
     }
   }
+
+  async onFormSubmit(e) {
+    e.preventDefault();
+    this.loading = true;
+    if(this.isNew) {
+      this.reservationService.createReservation(this.reservationData, this.isStanding).subscribe(result => {
+       console.log(result);
+       if(result)
+       {
+        notify({
+          message: "Reservation created.",
+      }, "success", 3000);
+      this.reInitReservationData();
+
+       } else {
+        notify({
+          message: "Reservation failed.",
+      }, "error", 3000);
+       }
+       this.loading = false;  
+      }, error => {
+        notify({
+          message: "Reservation failed.",
+      }, "error", 3000);
+        this.loading = false;
+      })
+    }
+}
+  reInitReservationData() {
+    this.reservationData = new ReservationDTO();
+    let date = new Date();
+    this.reservationData.isStanding = this.isStanding;
+    this.reservationData.startDate = new Date(date.setHours(MIN_START_TIME, 0, 0, 0));
+    this.reservationData.endDate = this.addTime(this.reservationData.startDate, MAX_TIME_GAME);
+    this.reservationData.numberOfPlayers = 1;
+    this.reservationData.notes = "";
+    this.reservationData.createdBy = this.currentUser.email;
+    if(!this.currentUser.isStaff) {
+      this.reservationData.user = this.currentUser;
+    }
+  }
+
+onCancelClick = (e) => {
+  console.log(e);
+  this.location.back();
+}
 }

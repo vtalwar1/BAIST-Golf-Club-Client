@@ -2,6 +2,7 @@ import { User } from "./user";
 
 export class ReservationDTO {
     reservationId: string;
+    reservationType: string;
     userId: string;
     standingReservationId: string;
     resevationNumber: number;

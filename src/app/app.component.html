@@ -1,5 +1,5 @@
 <ng-container *ngIf="isAuthenticated(); else unauthenticated">
-  <app-side-nav-outer-toolbar title="{{appInfo.title}}">
+  <app-side-nav-outer-toolbar title="{{appInfo.title}}" [navItems]="authService.navItems">
     <router-outlet></router-outlet>
     <app-footer>
       Copyright © 2020-{{appInfo.currentYear}} {{appInfo.title}} Inc.

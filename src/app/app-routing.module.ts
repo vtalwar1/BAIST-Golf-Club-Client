@@ -7,8 +7,20 @@ import { ProfileComponent } from './pages/profile/profile.component';
 import { TasksComponent } from './pages/tasks/tasks.component';
 import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
 import { CreateReservationComponent } from './pages/reservation/create-reservation/create-reservation.component';
+import { ReservationListComponent } from './shared/components/reservation-list/reservation-list.component';
+import { UpdateReservationComponent } from './shared/components/update-reservation/update-reservation.component';
 
 const routes: Routes = [
+  {
+    path: 'update-reservation',
+    component: UpdateReservationComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'reservation-list',
+    component: ReservationListComponent,
+    canActivate: [ AuthGuardService ]
+  },
   {
     path: 'create-reservation',
     component: CreateReservationComponent,

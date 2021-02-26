@@ -1,4 +1,4 @@
-import { Component, OnInit, NgModule, Input, ViewChild } from '@angular/core';
+import { Component, OnInit, NgModule, Input, ViewChild, OnChanges, SimpleChanges } from '@angular/core';
 import { SideNavigationMenuModule, HeaderModule } from '../../shared/components';
 import { ScreenService } from '../../shared/services';
 import { DxDrawerModule } from 'devextreme-angular/ui/drawer';
@@ -12,7 +12,7 @@ import { Router, NavigationEnd } from '@angular/router';
   templateUrl: './side-nav-outer-toolbar.component.html',
   styleUrls: ['./side-nav-outer-toolbar.component.scss']
 })
-export class SideNavOuterToolbarComponent implements OnInit {
+export class SideNavOuterToolbarComponent implements OnInit, OnChanges {
   @ViewChild(DxScrollViewComponent, { static: true }) scrollView: DxScrollViewComponent;
   selectedRoute = '';
 
@@ -22,12 +22,20 @@ export class SideNavOuterToolbarComponent implements OnInit {
   @Input()
   title: string;
 
+  @Input()
+  navItems: any;
+
   menuMode = 'shrink';
   menuRevealMode = 'expand';
   minMenuSize = 0;
   shaderEnabled = false;
 
   constructor(private screen: ScreenService, private router: Router) { }
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if(changes.navItems)
+      this.navItems = changes.navItems.currentValue;
+  }
 
   ngOnInit() {
     this.menuOpened = this.screen.sizes['screen-large'];

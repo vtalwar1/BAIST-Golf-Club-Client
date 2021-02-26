@@ -17,6 +17,12 @@ export const navigation = [
         text: 'Reservation List',
         path: '/tasks',
         icon: 'bulletlist'
+      },
+      {
+        text: 'Approve Standing Reservations',
+        path: '/approve-standing-reservations',
+        icon: 'bulletlist',
+        visible: false
       }
     ]
   }
