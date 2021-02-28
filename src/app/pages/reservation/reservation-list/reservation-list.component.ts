@@ -54,9 +54,13 @@ getReservationStatus(reservationStartDate: Date): string {
 
 startEdit = (e) => {
   if(e.data.startDate) {
-  if(this.getReservationStatus(e.data.startDate) == "Upcoming") {
+  if(e.data.standingReservationId) {
+    notify({
+      message: "Can not modify reservations created from standing reservation.",
+  }, "error", 3000);
+  } else if (this.getReservationStatus(e.data.startDate) == "Upcoming") {
     let reservationId = e.data.reservationId;
-    this.router.navigateByUrl("/update-reservation?reservationId=" + reservationId);
+    this.router.navigateByUrl("/update-reservation?reservationId=" + reservationId);   
   } else {
     notify({
       message: "Can not modify past reservations",

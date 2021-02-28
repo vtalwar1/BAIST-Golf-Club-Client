@@ -1,6 +1,6 @@
 <h2 class="content-block">Approve Standing Reservation</h2>
 
-<dx-data-grid class="dx-card wide-card"
+<dx-data-grid #grid class="dx-card wide-card"
   [dataSource]="dataSource"
   [showBorders]="false"
   [focusedRowEnabled]="true"
@@ -28,6 +28,7 @@
         type="success"
         text="Approve"       
         icon="check"
+        hint="Approve Standing Reservation"
         [width]="160"
         [disabled]="loading"
         (onClick)="approveButtonClick($event, data)">

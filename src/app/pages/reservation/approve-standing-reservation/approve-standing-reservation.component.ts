@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { DxDataGridComponent, DxDataGridModule } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
+import notify from 'devextreme/ui/notify';
 import { StandingReservation } from 'src/app/shared/models/standing-reservation';
 import { User } from 'src/app/shared/models/user';
 import { AuthService } from 'src/app/shared/services';
@@ -11,6 +13,7 @@ import { ReservationService } from 'src/app/shared/services/reservation.service'
   styleUrls: ['./approve-standing-reservation.component.scss']
 })
 export class ApproveStandingReservationComponent implements OnInit {
+  @ViewChild('grid', { static: false }) grid: DxDataGridComponent;
   private currentUser: User = new User();
   public dataSource: any;
   public standingReservationList: StandingReservation[];
@@ -36,11 +39,28 @@ export class ApproveStandingReservationComponent implements OnInit {
 }
 
 approveButtonClick = (e, data) => {
-  console.log(e, data);
   this.loading = true;
-  setTimeout(() => {
+  console.log(e, data);
+  data.data.approvedBy = this.currentUser.userId;
+
+  this.reservationService.approveStandingReservation(data.data).subscribe(result => {
+    if(result) {
+      this.grid.instance.refresh();
+      notify({
+        message: "Standing Reservation Approved.",
+    }, "error", 3000);
+    } else {
+      notify({
+        message: "Standing Reservation Approval failed.",
+    }, "error", 3000);
+    }
     this.loading = false;
-  }, 5000);
+  }, error => {
+    this.loading = false;
+    notify({
+      message: "Standing Reservation Approval failed.",
+  }, "error", 3000);
+  });
 }
 
 }

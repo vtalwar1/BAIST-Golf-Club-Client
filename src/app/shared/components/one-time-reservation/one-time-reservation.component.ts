@@ -119,7 +119,6 @@ public loading: boolean = false;
 
   onReservationTypeValueChange = (e) => {
     this.isStanding = e.value == "S";
-    notify(e.value);
     if(this.isStanding) {
       this.reservationData.numberOfPlayers = 1;
       this.reservationData.endDate = this.addWeeks(this.reservationData.startDate, MAX_END_WEEKS_STANDING);
