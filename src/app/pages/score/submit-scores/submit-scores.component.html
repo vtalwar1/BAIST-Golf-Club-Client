@@ -1,0 +1,96 @@
+<h2 class="content-block">Submit Score</h2>
+<div class="content-block">
+    <div class="dx-card responsive-paddings" style="height: 490px;">
+        <dx-scroll-view #scrollView
+        id="scrollview" style="height: 460px;">
+<div>
+    <form action="action" (submit)="onFormSubmit($event)">
+<dx-form id="form"
+    [formData]="scoreData"
+    [colCount]="2"
+    [showValidationSummary]="true"
+    (onFieldDataChanged)="fieldDataChanged($event)">
+    <dxi-item itemType="group" caption="User Info">
+    <dxi-item dataField="user.membership.membershipNumber" 
+    [editorOptions]="editorOptions">
+        <dxo-label
+        text="Membership Number">
+        </dxo-label>  
+        <dxi-validation-rule type="required" message="Membership Number is required"></dxi-validation-rule>
+        <dxi-validation-rule type="async" message="Invalid Membership Number" [validationCallback]="asyncValidationMembershipNumber"></dxi-validation-rule>
+    </dxi-item>
+
+    <dxi-item dataField="user.fullName" [disabled]="true">
+        <dxo-label
+        text="Member Name">
+        </dxo-label>  
+    </dxi-item>
+
+    <dxi-item dataField="user.membership.membershipType" [disabled]="true">
+        <dxo-label
+        text="Membership Type">
+        </dxo-label>  
+    </dxi-item>
+        
+    </dxi-item>
+        <dxi-item itemType="group" caption="Score Info">
+
+            <dxi-item dataField="reservation.reservationNumber" 
+            [editorOptions]="editorOptions"
+            editorType="dxNumberBox"
+            editorOptions="{ showClearButton: 'true', onValueChanged: onReservationNumberValueChange}">
+                <dxo-label
+                text="Reservation Number">
+                </dxo-label> 
+                <dxi-validation-rule type="async" [message]="asyncMessageString" [validationCallback]="asyncValidationReservationNumber"></dxi-validation-rule>
+            </dxi-item>
+
+  <dxi-item dataField="date"
+            editorType="dxDateBox"
+            [editorOptions]="{
+                    type: 'date',
+                    height: 36,
+                    width: '100%',
+                    readOnly: disableDatePlayed
+                }">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxo-label
+    text="Date Played">
+    </dxo-label>  
+  </dxi-item>
+  <dxi-item dataField="totalScore"
+            editorType="dxNumberBox"
+            [editorOptions]="{ onValueChanged: onScoreValueChange }">
+    <dxi-validation-rule type="required"></dxi-validation-rule>
+    <dxo-label
+    text="Total Score">
+    </dxo-label>  
+  </dxi-item>
+
+  <dxi-item dataField="handicap"
+  editorType="dxNumberBox"
+  [editorOptions]="{ readOnly: true }">
+<dxi-validation-rule type="required"></dxi-validation-rule>
+<dxo-label
+text="Handicap">
+</dxo-label>  
+</dxi-item>
+  
+        </dxi-item>
+        <dxi-item 
+            itemType="button"
+            horizontalAlignment="left"
+            [buttonOptions]="submitButtonOptions"
+            [visible]="true"
+            [disabled]="loading"
+            >
+        </dxi-item>
+
+     
+ </dx-form>
+    </form>
+</div>
+</dx-scroll-view>
+        
+</div>
+</div>   

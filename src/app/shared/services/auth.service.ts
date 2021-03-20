@@ -185,6 +185,16 @@ export class AuthService {
             visible: this._user.isStaff
           }
         ]
+      },
+      {
+        text: 'Scores',
+        icon: 'event',
+        items: [
+          {
+            text: 'Submit Score',
+            path: '/submit-score'
+          }
+        ]
       }
     ];
   }

@@ -10,7 +10,8 @@ import { BaseHttpService } from './base-http.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ReservationService extends BaseHttpService { 
+export class ReservationService extends BaseHttpService {
+  
  
  
   private apiUrl =  this.baseApiURL + '/api/Reservations'
@@ -57,5 +58,8 @@ export class ReservationService extends BaseHttpService {
     return this.http.post<StandingReservation>(this.apiUrl + "/ApproveStandingReservation", standingReservation)
   }
 
+  public getReservationByReservationNumber(reservationNumber: number, membershipNumber: number): Observable<Reservation> {
+    return this.http.get<Reservation>(this.apiUrl + '/GetReservationByReservationNumber/' + reservationNumber + '/' + membershipNumber);
+  } 
 
 }

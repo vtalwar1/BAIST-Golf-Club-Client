@@ -1,5 +1,6 @@
 import { Location } from '@angular/common';
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { ɵINTERNAL_BROWSER_DYNAMIC_PLATFORM_PROVIDERS } from '@angular/platform-browser-dynamic';
 import { DxSelectBoxComponent } from 'devextreme-angular';
 import notify from 'devextreme/ui/notify';
 import { ReservationDTO } from '../../models/reservationDTO';
@@ -189,6 +190,7 @@ public loading: boolean = false;
 
   asyncValidationTimeSlot = () => {
     var isValid = false;
+    if(!this.isStanding) {
     return new Promise((resolve) => {
       
       this.reservationService.getAllReservations(true).subscribe(result => {
@@ -206,7 +208,7 @@ public loading: boolean = false;
           else{
             var playersCount = 0;
             result.forEach(x => {
-              if(new Date(x.startDate).toDateString() == this.reservationData.startDate.toDateString()) {
+              if(new Date(x.startDate).toISOString() == this.reservationData.startDate.toISOString()) {
                 playersCount = playersCount + x.numberOfPlayers;
               }
             });
@@ -225,7 +227,7 @@ public loading: boolean = false;
         }  else {
           var playersCount = 0;
             result.filter(x => x.reservationId != this.reservationData.reservationId).forEach(x => {
-              if(new Date(x.startDate).toDateString() == this.reservationData.startDate.toDateString()) {
+              if(new Date(x.startDate).toISOString() == this.reservationData.startDate.toISOString()) {
                 playersCount = playersCount + x.numberOfPlayers;
               }
             });
@@ -246,7 +248,25 @@ public loading: boolean = false;
         isValid = true;
         resolve(true);
       })
-  });    
+  });  } else
+  {
+    return new Promise((resolve) => {
+
+      this.reservationService.getAllStandingReservationsForApproval(true).subscribe(x=>{
+        if(this.reservationData.user && x.filter(y => y.user.email.toLowerCase() == this.reservationData.user.email.toLowerCase()).length > 0){
+          isValid = false;
+          this.asyncMessageString = "One active standing reservation already exists."
+        } else {
+          isValid = true;
+        }
+
+        resolve(isValid);
+      }, e => {
+        resolve(false);
+      });
+
+    });
+  }  
 
     }
 

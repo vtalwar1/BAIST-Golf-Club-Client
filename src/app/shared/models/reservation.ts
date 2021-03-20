@@ -1,3 +1,4 @@
+import { Score } from "./score";
 import { StandingReservation } from "./standing-reservation";
 import { User } from "./user";
 
@@ -22,4 +23,5 @@ export class Reservation {
 
     standingReservation?: StandingReservation;
     user?: User;
+    score?: Score[];
 }
