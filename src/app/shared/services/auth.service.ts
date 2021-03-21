@@ -193,6 +193,10 @@ export class AuthService {
           {
             text: 'Submit Score',
             path: '/submit-score'
+          },
+          {
+            text: 'View Score',
+            path: '/view-score'
           }
         ]
       }

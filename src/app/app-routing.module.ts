@@ -11,8 +11,14 @@ import { ReservationListComponent } from './pages/reservation/reservation-list/r
 import { UpdateReservationComponent } from './pages/reservation/update-reservation/update-reservation.component';
 import { ApproveStandingReservationComponent } from './pages/reservation/approve-standing-reservation/approve-standing-reservation.component';
 import { SubmitScoresComponent } from './pages/score/submit-scores/submit-scores.component';
+import { ViewScoresComponent } from './pages/score/view-scores/view-scores.component';
 
 const routes: Routes = [
+  {
+    path: 'view-score',
+    component: ViewScoresComponent,
+    canActivate: [ AuthGuardService ]
+  },
   {
     path: 'submit-score',
     component: SubmitScoresComponent,

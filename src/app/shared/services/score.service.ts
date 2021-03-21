@@ -8,7 +8,7 @@ import { BaseHttpService } from './base-http.service';
   providedIn: 'root'
 })
 export class ScoreService extends BaseHttpService {
-
+  
   private apiUrl =  this.baseApiURL + '/api/Scores'
   constructor(private http: HttpClient) {
     super();
@@ -17,4 +17,9 @@ export class ScoreService extends BaseHttpService {
   public submitScore(scoreData: Score): Observable<boolean> {
     return this.http.post<boolean>(this.apiUrl, scoreData);
   }
+
+  getAllScoresByUser(userId: string): Observable<Score[]> {
+    return this.http.get<Score[]>(this.apiUrl + '/GetAllScoresByUserType/' + userId)
+  }
+
 }

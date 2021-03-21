@@ -20,6 +20,7 @@ export class Reservation {
     createdDateTime?: Date;
     lastModifiedBy?: string;
     lastModifiedDateTime?: Date;
+    cartRequired: boolean;
 
     standingReservation?: StandingReservation;
     user?: User;
